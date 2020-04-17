@@ -51,6 +51,33 @@ class Board extends React.Component {
   }
 }
 
+function SortAsc(props) {
+  console.log('a:' + props.isAsc);
+  return (
+    <div>
+      <button
+        className={props.isAsc ? 'sort-btn-true' : 'sort-btn'}
+        onClick={() => props.onClick()}
+      >
+        昇順
+      </button>
+    </div>
+  );
+}
+
+function SortDesc(props) {
+  return (
+    <div>
+      <button
+        className={props.isDesc ? 'sort-btn-true' : 'sort-btn'}
+        onClick={() => props.onClick()}
+      >
+        降順
+      </button>
+    </div>
+  );
+}
+
 class Game extends React.Component {
   constructor() {
     super();
@@ -64,13 +91,14 @@ class Game extends React.Component {
       stepNumber: 0,
       xIsNext: true,
       buttonNumber: null,
-      compMoves: [],
+      isAsc: false,
+      isDesc: false,
+      dispHistory: [],
     };
   }
 
   handleClick(i) {
     const history = this.state.history.slice(0, this.state.stepNumber + 1);
-    // const history = this.state.history;
     const current = history[history.length - 1];
     const squares = current.squares.slice();
     const id = current.id.slice();
@@ -101,33 +129,18 @@ class Game extends React.Component {
     });
   }
 
-  // copyMoves(moves) {
-  //   this.setState({
-  //     compMoves: moves,
-  //   });
-  // }
-
-  sortAscClick(sortMoves) {
-    console.log('a:' + sortMoves.length);
-    // sortMoves.sort((a, b) => {
-    //   a = a[a.id];
-    //   b = b[b.id];
-    //   return a === b ? 0 : a > b ? 1 : -1;
-    // });
+  sortAscClick() {
+    this.setState({
+      isAsc: true,
+      isDesc: false,
+    });
   }
 
-  sortDescClick(moves) {
-    // if (moves === this.state.compMoves) {
-    //   return;
-    // }
-    moves = this.state.compMoves((a, b) => {
-      a = a[a.id];
-      b = b[b.id];
-      return a === b ? 0 : a > b ? -1 : 1;
+  sortDescClick() {
+    this.setState({
+      isAsc: false,
+      isDesc: true,
     });
-    // this.setState({
-    //   compMoves: moves,
-    // });
   }
 
   render() {
@@ -154,13 +167,20 @@ class Game extends React.Component {
       );
     });
 
+    if (this.state.isAsc && !this.state.isDesc) {
+      moves.sort();
+    }
+    if (this.state.isDesc && !this.state.isAsc) {
+      moves.reverse();
+    }
+
     let status;
     if (winner) {
       status = 'Winner: ' + winner;
     } else {
       status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
     }
-    let sortMoves = moves.slice();
+
     return (
       <div className='game'>
         <div className='game-board'>
@@ -171,14 +191,13 @@ class Game extends React.Component {
         </div>
         <div className='game-info'>
           <div>{status}</div>
-          <ol>{sortMoves}</ol>
+          <ol>{moves}</ol>
         </div>
-        <div className='sort-btn'>
-          <button onClick={() => this.sortAscClick({ sortMoves })}>昇順</button>
-          <button onClick={() => this.sortDescClick({ moves, sortMoves })}>
-            降順
-          </button>
-        </div>
+        <SortAsc isAsc={this.state.isAsc} onClick={() => this.sortAscClick()} />
+        <SortDesc
+          isDesc={this.state.isDesc}
+          onClick={() => this.sortDescClick()}
+        />
       </div>
     );
   }

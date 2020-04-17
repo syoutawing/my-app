@@ -49,3 +49,13 @@ ul {
 .game-info {
   margin-left: 20px;
 }
+
+.sort-btn:hover {
+  color: #fff;
+  background-color: #3a3a3a;
+  cursor: pointer;
+}
+
+.sort-btn-true {
+  font-weight: 900;
+}
