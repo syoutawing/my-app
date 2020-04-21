@@ -59,3 +59,8 @@ ul {
 .sort-btn-true {
   font-weight: 900;
 }
+
+.sort {
+  padding-left: 0px;
+  margin-top: 10px;
+}
